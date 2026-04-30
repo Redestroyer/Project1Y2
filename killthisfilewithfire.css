@@ -1,0 +1,17 @@
+body {
+    background-image: url("sky-with-white-clouds-cloudy-weather-summer-day_154156-37581-2833134838.jpg");
+    background-repeat: no-repeat;
+    background-position: cover;
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: 'Courier New', Courier, monospace;
+}
+.start {
+    background-color: rgba(227,234, 247, 0.6);
+    width:300px;
+    height: 300px;
+    padding: 32px;
+    & p {
+        font-family: Courier, monospace;
+    }
+}
