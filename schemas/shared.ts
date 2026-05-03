@@ -3,26 +3,28 @@ import Type from "typebox";
 export const id = Type.Number({ minimum: 1 });
 export const IDParam = Type.Object({ id });
 
-export function Boilerplate<B extends Type.TObject>(body: B, partialBody?: B | Type.TPartial<B>, notFound?: Type.TSchema) {
+export function Boilerplate<B extends Type.TSchema>(body: B, partialBody?: Type.TPartial<B>, notFound?: Type.TSchema, genericSuccess?: Type.TSchema) {
     partialBody = partialBody || Type.Partial(body);
     notFound = notFound || Type.String({ default: "Not found." });
+    genericSuccess = genericSuccess || Type.String({ default: "Success." });
     return {
         GetAll: {
             response: {
-                200: Type.Array(body)
+                200: Type.Union([Type.Array(body), Type.String()])
             }
         },
         GetOne: {
             params: IDParam,
             response: {
-                200: body,
+                200: Type.Union([body, Type.String()]),
                 404: notFound
             }
         },
         Create: {
             body,
             response: {
-                201: body
+                201: body,
+                303: Type.Any()
             }
         },
         Overwrite: {
@@ -30,6 +32,7 @@ export function Boilerplate<B extends Type.TObject>(body: B, partialBody?: B | T
             body,
             response: {
                 201: body,
+                303: Type.Any(),
                 404: notFound
             }
         },
@@ -38,13 +41,15 @@ export function Boilerplate<B extends Type.TObject>(body: B, partialBody?: B | T
             body: partialBody,
             response: {
                 201: body,
+                303: Type.Any(),
                 404: notFound
             }
         },
         Delete: {
             params: IDParam,
             response: {
-                201: Type.Object({}),
+                201: genericSuccess,
+                303: Type.Any(),
                 404: notFound
             }
         }

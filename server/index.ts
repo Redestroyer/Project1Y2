@@ -15,6 +15,7 @@ import { User } from "../entities";
 import { User as UserSchemas } from "../schemas";
 import FastifyView from "@fastify/view";
 import Pug from "pug";
+import FastifyFormbody from "@fastify/formbody";
 import ContentTypeSelector, { ContentType } from "./plugins/ContentTypeSelector";
 
 declare module "fastify" {
@@ -45,6 +46,7 @@ export default async function Server(datasource: DataSource) {
         logger: true
     }).withTypeProvider<TypeBoxTypeProvider>();
 
+    App.register(FastifyFormbody);
     App.register(FastifyView, {
         engine: { pug: Pug },
         root: "./server/views/",
@@ -54,21 +56,42 @@ export default async function Server(datasource: DataSource) {
     App.decorate("datasource", datasource);
     App.register(ContentTypeSelector);
 
-    App.register(async function(app, options: { repository: Repository<User> }) {
-        const { repository } = options;
+    App.register(async function(app, options: { prefix: string, repository: Repository<User> }) {
+        const { prefix, repository } = options;
         app.get("/", async function(request: TypedRequest<typeof UserSchemas.GetAll>, response) {
             const users = await repository.find();
-            return response.send(users);
+            switch (request.acceptType([ContentType.ApplicationJSON, ContentType.TextHTML])) {
+                case ContentType.ApplicationJSON:
+                    return response.header("content-type", ContentType.ApplicationJSON).send(users);
+            
+                default:
+                    return response.viewAsync("users/index", { users });
+            }
         });
         app.get("/:id", async function(request: TypedRequest<typeof UserSchemas.GetOne>, response) {
             const user = await repository.findOneBy(request.params);
             if (user === null) return response.status(404);
-            return response.send(user);
+            switch (request.acceptType([ContentType.ApplicationJSON, ContentType.TextHTML])) {
+                case ContentType.ApplicationJSON:
+                    return response.type(ContentType.ApplicationJSON).send(user);
+            
+                default:
+                    return response.viewAsync("users/get", { user });
+            }
+        });
+        app.get("/new", async function(request, response) {
+            return response.viewAsync("users/new");
         });
         app.post("/", async function(request: TypedRequest<typeof UserSchemas.Create>, response) {
             const user = repository.create(request.body);
             await repository.insert(user);
-            return response.status(201).send(user);
+            switch (request.acceptType([ContentType.ApplicationJSON, ContentType.TextHTML])) {
+                case ContentType.ApplicationJSON:
+                    return response.status(201).type(ContentType.ApplicationJSON).send(user);
+            
+                default:
+                    return response.redirect(`${request.originalUrl}${prefix}/${user.id}`, 303);
+            }
         });
         app.put("/:id", async function(request: TypedRequest<typeof UserSchemas.Overwrite>, response) {
             if (!await repository.existsBy(request.params)) return response.status(404);
@@ -98,7 +121,10 @@ export default async function Server(datasource: DataSource) {
             default:
                 return response.viewAsync("index");
         }
-    })
+    });
+    App.post("/echo", async function(request, response) {
+        return response.send(request.body);
+    });
 
     return App;
 }
