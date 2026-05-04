@@ -1,17 +1,26 @@
+@font-face {
+  font-family: relicta;
+  src: url(workspaces/Project1Y2/octuple_max/Octuple-max-demo.ttf);
+  }
+
 body {
-    background-image: url("sky-with-white-clouds-cloudy-weather-summer-day_154156-37581-2833134838.jpg");
-    background-repeat: no-repeat;
-    background-position: cover;
-    background-attachment: fixed;
-    background-size: cover;
-    font-family: 'Courier New', Courier, monospace;
+  background-image:url("sky-with-white-clouds-cloudy-weather-summer-day_154156-37581-2833134838.jpg");
+  background-repeat: no-repeat;
+  background-position: cover;
+  background-attachment: fixed;
+  background-size: cover;
 }
-.start {
-    background-color: rgba(227,234, 247, 0.6);
-    width:300px;
-    height: 300px;
-    padding: 32px;
-    & p {
-        font-family: Courier, monospace;
+p {
+    font-family: 'Courier New', Courier, monospace;
     }
+.start {
+    border-style: outset;
+    border-color: rgba(227,234, 247, 0.6);
+    background-color: rgba(159, 201, 233, 0.51);
+    width:90%;
+    height: 100%;
+    padding: 32px;
+}
+.three-times-the-kapikabibium {
+    font-family: relicta;
 }
