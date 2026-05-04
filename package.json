@@ -1,0 +1,28 @@
+{
+  "name": "project1y2",
+  "module": "server.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pug": "^2.0.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@fastify/formbody": "^8.0.2",
+    "@fastify/type-provider-typebox": "^6.1.0",
+    "@fastify/view": "^11.1.1",
+    "fastify": "^5.8.5",
+    "fastify-plugin": "^5.1.0",
+    "pug": "^3.0.4",
+    "reflect-metadata": "^0.2.2",
+    "sqlite": "^5.1.1",
+    "typebox": "^1.1.37",
+    "typeorm": "^0.3.28"
+  },
+  "scripts": {
+    "serve": "bun run ./index.ts"
+  }
+}

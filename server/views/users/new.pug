@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+    h1 Create new user
+    form(action="/users", method="post")
+        label(for="name") Name:
+            input(type="text", name="name", id="name", required, minlength="4", maxlength="128")
+        br
+        label(for="bio") Bio:
+            textarea(name="bio", id="bio")
+        br
+        button(type="submit") Create
