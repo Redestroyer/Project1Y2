@@ -1,5 +1,10 @@
 extends ../layout
 
 block content
-    h1= user.name
-    p= user.bio
+    if user
+        h1= user.name
+        p= user.bio
+        a(href=url.replace(/\/?$/, `/edit`)) Edit
+        form(action=`${url}/delete`, method="post"): button(type="submit") Delete
+    else
+        h1 User not found.

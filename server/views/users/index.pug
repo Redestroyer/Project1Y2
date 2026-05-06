@@ -4,5 +4,6 @@ block content
     h1 Users
     each user in users
         section
-            h2= user.name
+            h2: a(href=url.replace(/\/?$/, `/${user.id}`))= user.name
             p= user.bio
+    a(href=`${url}/new`) New

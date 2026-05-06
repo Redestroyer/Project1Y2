@@ -65,7 +65,7 @@ export function ContentTypeCodesToEnum(types: string): ContentType[] {
     return list;
 }
 
-async function ContentTypeSelector(app: FastifyInstance) {
+const ContentTypeSelector = FastifyPlugin(async function(app: FastifyInstance) {
     app.decorateRequest("acceptedTypes", {
         getter() {
             const accept = this.headers.accept;
@@ -81,5 +81,5 @@ async function ContentTypeSelector(app: FastifyInstance) {
         return accept.find(v => types.map(t => ContentTypeMatch(t, v)).reduce((a, b) => a || b)) || null;
     };
     app.decorateRequest("acceptType", acceptType!);
-};
-export default FastifyPlugin(ContentTypeSelector);
+});
+export default ContentTypeSelector;

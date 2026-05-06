@@ -21,10 +21,11 @@ export function Boilerplate<B extends Type.TSchema>(body: B, partialBody?: Type.
             }
         },
         Create: {
-            body,
+            body: Type.Intersect([body, Type.Object({ $METHOD: Type.Union([Type.Literal("post"), Type.Literal("put"), Type.Literal("patch"), Type.Literal("delete")]) }, { default: { $METHOD: "post" } })]),
             response: {
                 201: body,
-                303: Type.Any()
+                303: Type.Any(),
+                404: notFound
             }
         },
         Overwrite: {
@@ -48,7 +49,7 @@ export function Boilerplate<B extends Type.TSchema>(body: B, partialBody?: Type.
         Delete: {
             params: IDParam,
             response: {
-                201: genericSuccess,
+                204: genericSuccess,
                 303: Type.Any(),
                 404: notFound
             }
